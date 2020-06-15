@@ -13,6 +13,14 @@ green_coin = pygame.transform.scale(pygame.image.load("assets/coins/green_coin.p
 red_coin = pygame.transform.scale(pygame.image.load("assets/coins/red_coin.png"), (ICON_SIZE, ICON_SIZE))
 blue_coin = pygame.transform.scale(pygame.image.load("assets/coins/blue_coin.png"), (ICON_SIZE, ICON_SIZE))
 yellow_coin = pygame.transform.scale(pygame.image.load("assets/coins/yellow_coin.png"), (ICON_SIZE, ICON_SIZE))
+
+dice1 = pygame.transform.scale(pygame.image.load("assets/coins/dice/dice1.png"), (ICON_SIZE, ICON_SIZE))
+dice2 = pygame.transform.scale(pygame.image.load("assets/coins/dice/dice2.png"), (ICON_SIZE, ICON_SIZE))
+dice3 = pygame.transform.scale(pygame.image.load("assets/coins/dice/dice3.png"), (ICON_SIZE, ICON_SIZE))
+dice4 = pygame.transform.scale(pygame.image.load("assets/coins/dice/dice4.png"), (ICON_SIZE, ICON_SIZE))
+dice5 = pygame.transform.scale(pygame.image.load("assets/coins/dice/dice5.png"), (ICON_SIZE, ICON_SIZE))
+dice6 = pygame.transform.scale(pygame.image.load("assets/coins/dice/dice6.png"), (ICON_SIZE, ICON_SIZE))
+
 running = True
 mouse_click = None
 
@@ -24,6 +32,36 @@ while running:
             running = False
 
     screen.blit(bg_img, (0, 0))
+
+    # initial Home position
+    screen.blit(green_coin, (2.5*ICON_SIZE, 1.5*ICON_SIZE))  #top  coin
+    screen.blit(green_coin, (2.5*ICON_SIZE, 3.5*ICON_SIZE))  #bottom coin
+    screen.blit(green_coin, (1.5*ICON_SIZE, 2.5*ICON_SIZE))  #left coin
+    screen.blit(green_coin, (3.5*ICON_SIZE, 2.5*ICON_SIZE))  #right coin 
+
+    screen.blit(yellow_coin, (2.5*ICON_SIZE, 10.5*ICON_SIZE))  #top coin
+    screen.blit(yellow_coin, (2.5*ICON_SIZE, 12.5*ICON_SIZE))  #bottom coin
+    screen.blit(yellow_coin, (1.5*ICON_SIZE, 11.5*ICON_SIZE))  #left coin
+    screen.blit(yellow_coin, (3.5*ICON_SIZE, 11.5*ICON_SIZE))  #right coin
+
+    screen.blit(red_coin, (10.5*ICON_SIZE, 2.5*ICON_SIZE))  #top coin
+    screen.blit(red_coin, (12.5*ICON_SIZE, 2.5*ICON_SIZE))  #bottom coin
+    screen.blit(red_coin, (11.5*ICON_SIZE, 1.5*ICON_SIZE))  #left coin
+    screen.blit(red_coin, (11.5*ICON_SIZE, 3.5*ICON_SIZE))  #right coin
+
+    screen.blit(blue_coin, (11.5*ICON_SIZE, 10.5*ICON_SIZE))  #top coin
+    screen.blit(blue_coin, (11.5*ICON_SIZE, 12.5*ICON_SIZE))  #bottom coin
+    screen.blit(blue_coin, (10.5*ICON_SIZE, 11.5*ICON_SIZE))  #left coin
+    screen.blit(blue_coin, (12.5*ICON_SIZE, 11.5*ICON_SIZE))  #right coin
+
+  #  screen.blit(dice1, (11.5*ICON_SIZE, 10.5*ICON_SIZE))  #dice for each color
+  #  screen.blit(dice1, (11.5*ICON_SIZE, 12.5*ICON_SIZE))  #dice for each color
+  #  screen.blit(dice1, (10.5*ICON_SIZE, 11.5*ICON_SIZE))  #dice for each color
+  #  screen.blit(dice1, (12.5*ICON_SIZE, 11.5*ICON_SIZE))  #dice for each color
+
+
+    pygame.display.flip()
+'''
     for i in range(15):
         screen.blit(green_coin, (i*ICON_SIZE, 6*ICON_SIZE))
     for i in range(15):
@@ -36,5 +74,7 @@ while running:
         screen.blit(yellow_coin, (6*ICON_SIZE, i*ICON_SIZE))
     for i in range(15):
         screen.blit(blue_coin, (7*ICON_SIZE, i*ICON_SIZE))
-    pygame.display.flip()
->>>>>>> fe0b6c97df7e0c46d574328e173ab0d4d2f8da1c
+'''
+    
+
+pygame.quit()
