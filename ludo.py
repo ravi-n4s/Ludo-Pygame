@@ -1,80 +1,78 @@
 import pygame
 from pygame import QUIT, KEYDOWN, K_ESCAPE
+from Player import Player
+from random import randint
+from time import sleep
 
 pygame.init()
 
 SCREEN_SIZE = 720
 ICON_SIZE = SCREEN_SIZE // 15
 
+pygame.display.set_caption("LUDO")
 screen = pygame.display.set_mode([SCREEN_SIZE, SCREEN_SIZE])
-bg_img = pygame.transform.scale(pygame.image.load("assets/board.png"), (SCREEN_SIZE, SCREEN_SIZE))
+bg_img = pygame.transform.scale(pygame.image.load(
+    "assets/board.png"), (SCREEN_SIZE, SCREEN_SIZE))
 
-green_coin = pygame.transform.scale(pygame.image.load("assets/coins/green_coin.png"), (ICON_SIZE, ICON_SIZE))
-red_coin = pygame.transform.scale(pygame.image.load("assets/coins/red_coin.png"), (ICON_SIZE, ICON_SIZE))
-blue_coin = pygame.transform.scale(pygame.image.load("assets/coins/blue_coin.png"), (ICON_SIZE, ICON_SIZE))
-yellow_coin = pygame.transform.scale(pygame.image.load("assets/coins/yellow_coin.png"), (ICON_SIZE, ICON_SIZE))
+Players = {
+    "green": Player("green", ICON_SIZE),
+    "red": Player("red", ICON_SIZE),
+    "blue": Player("blue", ICON_SIZE),
+    "yellow": Player("yellow", ICON_SIZE)
+}
+next_move = 'green'
 
-dice1 = pygame.transform.scale(pygame.image.load("assets/dice/dice1.png"), (ICON_SIZE, ICON_SIZE))
-dice2 = pygame.transform.scale(pygame.image.load("assets/dice/dice2.png"), (ICON_SIZE, ICON_SIZE))
-dice3 = pygame.transform.scale(pygame.image.load("assets/dice/dice3.png"), (ICON_SIZE, ICON_SIZE))
-dice4 = pygame.transform.scale(pygame.image.load("assets/dice/dice4.png"), (ICON_SIZE, ICON_SIZE))
-dice5 = pygame.transform.scale(pygame.image.load("assets/dice/dice5.png"), (ICON_SIZE, ICON_SIZE))
-dice6 = pygame.transform.scale(pygame.image.load("assets/dice/dice6.png"), (ICON_SIZE, ICON_SIZE))
+def get_next_move():
+    colors = list(Players.keys())
+    return colors[(colors.index(next_move)+1) % (len(colors))]
 
+dice = [pygame.transform.scale(pygame.image.load(f"assets/dice/dice{i}.png"), (ICON_SIZE, ICON_SIZE)) for i in range(1,7)]
+dice_value = 1
 running = True
 mouse_click = None
 
 while running:
+    sleep(1/5)
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONUP:
-            mouse_click = pygame.mouse.get_pos()
+            x,y = pygame.mouse.get_pos()
+            mouse_click = (x // ICON_SIZE, y // ICON_SIZE)
+            print(f"clicked on {mouse_click}")
         elif event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             running = False
 
     screen.blit(bg_img, (0, 0))
 
-    # initial Home position for each coin and dice at center
-    screen.blit(green_coin, (2.5*ICON_SIZE, 1.5*ICON_SIZE))  #top  coin
-    screen.blit(green_coin, (2.5*ICON_SIZE, 3.5*ICON_SIZE))  #bottom coin
-    screen.blit(green_coin, (1.5*ICON_SIZE, 2.5*ICON_SIZE))  #left coin
-    screen.blit(green_coin, (3.5*ICON_SIZE, 2.5*ICON_SIZE))  #right coin 
+    for color in Players:
+        for x, y in Players[color].coins:
+            screen.blit(Players[color].surf, (x*ICON_SIZE, y*ICON_SIZE))
 
-    screen.blit(yellow_coin, (2.5*ICON_SIZE, 10.5*ICON_SIZE))  #top coin
-    screen.blit(yellow_coin, (2.5*ICON_SIZE, 12.5*ICON_SIZE))  #bottom coin
-    screen.blit(yellow_coin, (1.5*ICON_SIZE, 11.5*ICON_SIZE))  #left coin
-    screen.blit(yellow_coin, (3.5*ICON_SIZE, 11.5*ICON_SIZE))  #right coin
+    screen.blit(Players["green"].surf, (0*ICON_SIZE - ICON_SIZE//6, 7*ICON_SIZE))
+    screen.blit(Players["blue"].surf, (0*ICON_SIZE + ICON_SIZE//6, 7*ICON_SIZE))
 
-    screen.blit(red_coin, (10.5*ICON_SIZE, 2.5*ICON_SIZE))  #top coin
-    screen.blit(red_coin, (12.5*ICON_SIZE, 2.5*ICON_SIZE))  #bottom coin
-    screen.blit(red_coin, (11.5*ICON_SIZE, 1.5*ICON_SIZE))  #left coin
-    screen.blit(red_coin, (11.5*ICON_SIZE, 3.5*ICON_SIZE))  #right coin
+    screen.blit(Players["green"].surf, (0*ICON_SIZE - ICON_SIZE//6, 8*ICON_SIZE))
+    screen.blit(Players["blue"].surf, (0*ICON_SIZE, 8*ICON_SIZE))
+    screen.blit(Players["red"].surf, (0*ICON_SIZE + ICON_SIZE//6, 8*ICON_SIZE))
 
-    screen.blit(blue_coin, (11.5*ICON_SIZE, 10.5*ICON_SIZE))  #top coin
-    screen.blit(blue_coin, (11.5*ICON_SIZE, 12.5*ICON_SIZE))  #bottom coin
-    screen.blit(blue_coin, (10.5*ICON_SIZE, 11.5*ICON_SIZE))  #left coin
-    screen.blit(blue_coin, (12.5*ICON_SIZE, 11.5*ICON_SIZE))  #right coin
+    screen.blit(Players["green"].surf, (0*ICON_SIZE - ICON_SIZE//6, 6*ICON_SIZE))
+    screen.blit(Players["blue"].surf, (0*ICON_SIZE, 6*ICON_SIZE))
+    screen.blit(Players["red"].surf, (0*ICON_SIZE + ICON_SIZE//6, 6*ICON_SIZE))
+    screen.blit(Players["yellow"].surf, (0*ICON_SIZE + ICON_SIZE//3, 6*ICON_SIZE))
 
-    screen.blit(dice1, (2.5*ICON_SIZE, 2.5*ICON_SIZE))  #dice at each Home position
-    screen.blit(dice1, (2.5*ICON_SIZE, 11.5*ICON_SIZE))  #dice at each Home position
-    screen.blit(dice1, (11.5*ICON_SIZE, 2.5*ICON_SIZE))  #dice at each Home position
-    screen.blit(dice1, (11.5*ICON_SIZE, 11.5*ICON_SIZE))  #dice at each Home position
-
+    if mouse_click is None:
+        x, y = Players[next_move].get_dice()
+        screen.blit(dice[dice_value - 1], (x*ICON_SIZE, y*ICON_SIZE))
+    else:
+        x,y = Players[next_move].get_dice()
+        if (mouse_click[0]  == x+0.5 or mouse_click[0]  == x-0.5) and (mouse_click[1]  == y+0.5 or mouse_click[1]  == y-0.5):
+            dice_value = randint(1,6)
+            print(f"clicked on {next_move} dice, dice score-{dice_value}")
+            
+            #logic plyer.move_to()
+            
+            next_move = get_next_move()
+        mouse_click = None
 
     pygame.display.flip()
-'''
-    for i in range(15):
-        screen.blit(green_coin, (i*ICON_SIZE, 6*ICON_SIZE))
-    for i in range(15):
-        screen.blit(red_coin, (8*ICON_SIZE, i*ICON_SIZE))
-    for i in range(15):
-        screen.blit(blue_coin, (i*ICON_SIZE, 8*ICON_SIZE))
-    for i in range(15):
-        screen.blit(yellow_coin, (i*ICON_SIZE, 7*ICON_SIZE))
-    for i in range(15):
-        screen.blit(yellow_coin, (6*ICON_SIZE, i*ICON_SIZE))
-    for i in range(15):
-        screen.blit(blue_coin, (7*ICON_SIZE, i*ICON_SIZE))
-'''
-    
 
 pygame.quit()
