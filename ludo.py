@@ -3,6 +3,7 @@ from pygame import QUIT, KEYDOWN, K_ESCAPE
 from Player import Player
 from random import randint
 from time import sleep
+#from collections import OrderedDict
 
 pygame.init()
 
@@ -32,7 +33,7 @@ running = True
 mouse_click = None
 
 while running:
-    sleep(1/5)
+    sleep(1/2)
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONUP:
             x,y = pygame.mouse.get_pos()
@@ -42,32 +43,29 @@ while running:
             running = False
 
     screen.blit(bg_img, (0, 0))
-
+    #print("blitted bg img")
+    # get position from coins list and update in every frame
     for color in Players:
         for x, y in Players[color].coins:
+            #print(f"{Players[color].coins} and x, y are {x} , {y}")
             screen.blit(Players[color].surf, (x*ICON_SIZE, y*ICON_SIZE))
 
-    screen.blit(Players["green"].surf, (0*ICON_SIZE - ICON_SIZE//6, 7*ICON_SIZE))
-    screen.blit(Players["blue"].surf, (0*ICON_SIZE + ICON_SIZE//6, 7*ICON_SIZE))
-
-    screen.blit(Players["green"].surf, (0*ICON_SIZE - ICON_SIZE//6, 8*ICON_SIZE))
-    screen.blit(Players["blue"].surf, (0*ICON_SIZE, 8*ICON_SIZE))
-    screen.blit(Players["red"].surf, (0*ICON_SIZE + ICON_SIZE//6, 8*ICON_SIZE))
-
-    screen.blit(Players["green"].surf, (0*ICON_SIZE - ICON_SIZE//6, 6*ICON_SIZE))
-    screen.blit(Players["blue"].surf, (0*ICON_SIZE, 6*ICON_SIZE))
-    screen.blit(Players["red"].surf, (0*ICON_SIZE + ICON_SIZE//6, 6*ICON_SIZE))
-    screen.blit(Players["yellow"].surf, (0*ICON_SIZE + ICON_SIZE//3, 6*ICON_SIZE))
 
     if mouse_click is None:
         x, y = Players[next_move].dice_pos
         screen.blit(dice[dice_value - 1], (x*ICON_SIZE, y*ICON_SIZE))
     else:
         x,y = Players[next_move].color_start
-        if (mouse_click[0] in range(y, y+6)) and (mouse_click[1] in range(x, x+6)):
+        if (mouse_click[0] in range(y, y+6)) and (mouse_click[1] in range(x, x+6)):   # if clicked anywhere inside color
             dice_value = randint(1,6)
             print(f"clicked on {next_move} dice, dice score-{dice_value}")
-            
+
+            if(dice_value == 6):
+                Players[next_move].coins[0] = Players[next_move].start_pos
+                print(Players[color].coins)
+                print("moved coin to start position")
+                continue
+
             #logic plyer.move_to()
             
             next_move = get_next_move()
