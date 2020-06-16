@@ -27,11 +27,22 @@ def get_next_move():
     colors = list(Players.keys())
     return colors[(colors.index(next_move)+1) % (len(colors))]
 
+def getHomeCoin(rangu):
+    for i in range(4):
+        if( Players[rangu].coins[i] == Players[rangu].coins_home_pos[i] ):
+            return i
+    return False           
+
 def anyCoinOutOfHome(rangu):
+    CoinsOutOfHome = 0
     for i in range(4):
         if( Players[rangu].coins[i]!= Players[rangu].coins_home_pos[i] ):
-            return Players[rangu].coins[i]
-    return False
+            index = i
+            CoinsOutOfHome += 1
+    if(CoinsOutOfHome == 1):
+        return Players[rangu].coins[index]
+    else:
+        return False
 
 dice = [pygame.transform.scale(pygame.image.load(f"assets/dice/dice{i}.png"), (ICON_SIZE, ICON_SIZE)) for i in range(1,7)]
 dice_value = 1
@@ -75,8 +86,8 @@ while running:
                 print(Players[next_move].coins)
                 #board should be updated
 
-            if(dice_value == 6 and ((mouse_click[0] in range(y, y+6)) and (mouse_click[1] in range(x, x+6)) ) ): #if rolled 6 and clicked inside their kingdom, coin should move out
-                Players[next_move].coins[0] = Players[next_move].start_pos
+            if(dice_value == 6 and (index := getHomeCoin(next_move)) is not False and ((mouse_click[0] in range(y, y+6)) and (mouse_click[1] in range(x, x+6)) ) ): #if rolled 6 and clicked inside their kingdom, coin should move out
+                Players[next_move].coins[index] = Players[next_move].start_pos
                 print(Players[color].coins)
                 print("moved coin to start position")
                 continue
