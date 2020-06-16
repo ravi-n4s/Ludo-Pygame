@@ -63,8 +63,8 @@ while running:
         x, y = Players[next_move].dice_pos
         screen.blit(dice[dice_value - 1], (x*ICON_SIZE, y*ICON_SIZE))
     else:
-        x,y = Players[next_move].dice_pos
-        if (mouse_click[0]  == x+0.5 or mouse_click[0]  == x-0.5) and (mouse_click[1]  == y+0.5 or mouse_click[1]  == y-0.5):
+        x,y = Players[next_move].color_start
+        if (mouse_click[0] in range(y, y+6)) and (mouse_click[1] in range(x, x+6)):
             dice_value = randint(1,6)
             print(f"clicked on {next_move} dice, dice score-{dice_value}")
             
