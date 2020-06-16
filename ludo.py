@@ -1,5 +1,5 @@
 import pygame
-from pygame import QUIT, KEYDOWN, K_ESCAPE
+from pygame import QUIT, KEYDOWN, K_ESCAPE, MOUSEBUTTONUP
 from Player import Player
 from random import randint
 from time import sleep
@@ -34,23 +34,24 @@ def getHomeCoin(rangu):
     return False           
 
 def anyCoinOutOfHome(rangu):
-    CoinsOutOfHome = 0
+    fn_CoinsOutOfHome = 0
     for i in range(4):
         if( Players[rangu].coins[i]!= Players[rangu].coins_home_pos[i] ):
             index = i
-            CoinsOutOfHome += 1
-    if(CoinsOutOfHome == 1):
+            fn_CoinsOutOfHome += 1
+    if(fn_CoinsOutOfHome == 1):
         return Players[rangu].coins[index]
-    else:
-        return False
 
 dice = [pygame.transform.scale(pygame.image.load(f"assets/dice/dice{i}.png"), (ICON_SIZE, ICON_SIZE)) for i in range(1,7)]
 dice_value = 1
 running = True
 mouse_click = None
 
+pygame.event.set_blocked(None)
+pygame.event.set_allowed(pygame.MOUSEBUTTONUP)
+pygame.event.set_allowed(pygame.QUIT)
 while running:
-    sleep(1/2)
+    sleep(1/5)
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONUP:
             x,y = pygame.mouse.get_pos()
@@ -66,7 +67,6 @@ while running:
         for x, y in Players[color].coins:
             screen.blit(Players[color].surf, (x*ICON_SIZE, y*ICON_SIZE))
 
-
     if mouse_click is None:
         p,q = Players[next_move].dice_pos
         screen.blit(dice[dice_value - 1], (p*ICON_SIZE, q*ICON_SIZE))
@@ -80,16 +80,18 @@ while running:
             pygame.event.wait()
 
             #logic plyer.move_to()
-            if( ( CoinToMove := anyCoinOutOfHome(next_move) ) is not False ):
-                Where_To = Players[next_move].move_to((CoinToMove), dice_value)
-                Players[next_move].coins[0] = Where_To
+                      
+            if( Players[next_move].CoinsOutOfHome ):
+                CoinToMove = anyCoinOutOfHome(next_move) 
+                Where_To = Players[next_move].move_to( CoinToMove, dice_value)
+                Players[next_move].coins[Players[next_move].coins.index(CoinToMove)] = Where_To
                 print(Players[next_move].coins)
-                #board should be updated
 
-            if(dice_value == 6 and (index := getHomeCoin(next_move)) is not False and ((mouse_click[0] in range(y, y+6)) and (mouse_click[1] in range(x, x+6)) ) ): #if rolled 6 and clicked inside their kingdom, coin should move out
+            if(dice_value == 6 and Players[next_move].CoinsOutOfHome != 4 and (index := getHomeCoin(next_move)) is not False and ((mouse_click[0] in range(y, y+6)) and (mouse_click[1] in range(x, x+6)) ) ): #if rolled 6 and clicked inside their kingdom, coin should move out
                 Players[next_move].coins[index] = Players[next_move].start_pos
                 print(Players[color].coins)
                 print("moved coin to start position")
+                Players[next_move].CoinsOutOfHome += 1
                 continue
             
             next_move = get_next_move()

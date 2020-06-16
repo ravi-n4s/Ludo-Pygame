@@ -11,6 +11,7 @@ class Player(pygame.sprite.Sprite):
         img = pygame.transform.scale(img, (size, size))
         self.surf.blit(img, (0, 0))
         self.rect = self.surf.get_rect()
+        self.CoinsOutOfHome = 0
 
         self.board = [(6, 0), (7, 0), (8, 0), (8, 1), (8, 2), (8, 3), (8, 4), (8, 5), (9, 6), (10, 6),
                       (11, 6), (12, 6), (13, 6), (14, 6), (14, 7), (14, 8), (13, 8), (12, 8), (11, 8), (10, 8),
