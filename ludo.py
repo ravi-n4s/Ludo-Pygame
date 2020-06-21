@@ -1,5 +1,5 @@
 import pygame
-from pygame import MOUSEBUTTONUP, QUIT#, KEYDOWN, K_ESCAPE, 
+from pygame import MOUSEBUTTONUP, QUIT, KEYDOWN, K_ESCAPE, 
 from Player import Player
 from random import randint
 from time import sleep
@@ -82,6 +82,8 @@ mouse_click = None
 
 pygame.event.set_blocked(None)      # If None is passed - it blocks all events
 pygame.event.set_allowed(pygame.MOUSEBUTTONUP) # after blocking all events, enabling required events - so that event queue doesn't track all
+pygame.event.set_allowed(pygame.KEYDOWN)
+pygame.event.set_allowed(pygame.K_ESCAPE)
 pygame.event.set_allowed(pygame.QUIT)
 
 while running:
