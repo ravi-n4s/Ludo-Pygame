@@ -34,4 +34,4 @@
 * Try and implement sounds for valid and invalid clicks
 
 # Board Sample:
-![Ludo Board with Coins and Dice sample Logo](/assets/Board - sample with coins and dice.png)
+![Ludo Board with Coins and Dice sample Logo](/assets/screenshot.png)
