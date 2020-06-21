@@ -46,7 +46,9 @@ class Player(pygame.sprite.Sprite):
             self.coins_home_pos = [(2.5, 10.5), (2.5, 12.5), (1.5, 11.5), (3.5, 11.5)]
             self.dice_pos = (2.5, 11.5)
             self.final_board = [(7,i) for i in range(8,14)]
-        
+
+    
+
 
     def move_to(self, coin, move):
         #coin = self.get_pos
@@ -55,3 +57,4 @@ class Player(pygame.sprite.Sprite):
             return self.board[(index + move) % 52]
         else:
             return -1
+
