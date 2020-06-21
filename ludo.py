@@ -87,7 +87,8 @@ while running:
                 Players[next_move].coins[Players[next_move].coins.index(CoinToMove)] = Where_To
                 print(Players[next_move].coins)
 
-            if(dice_value == 6 and Players[next_move].CoinsOutOfHome != 4 and (index := getHomeCoin(next_move)) is not False and ((mouse_click[0] in range(y, y+6)) and (mouse_click[1] in range(x, x+6)) ) ): #if rolled 6 and clicked inside their kingdom, coin should move out
+            if(dice_value == 6 and Players[next_move].CoinsOutOfHome != 4 and (getHomeCoin(next_move)) is not False and ((mouse_click[0] in range(y, y+6)) and (mouse_click[1] in range(x, x+6)) ) ): #if rolled 6 and clicked inside their kingdom, coin should move out
+                index = getHomeCoin(next_move)
                 Players[next_move].coins[index] = Players[next_move].start_pos
                 print(Players[color].coins)
                 print("moved coin to start position")
