@@ -1,5 +1,5 @@
 import pygame
-from pygame import MOUSEBUTTONUP, QUIT, KEYDOWN, K_ESCAPE, 
+from pygame import MOUSEBUTTONUP, QUIT, KEYDOWN, K_ESCAPE
 from Player import Player
 from random import randint
 from time import sleep
@@ -54,7 +54,7 @@ def getMouseClick():
         print(f"clicked on {mouse_click}")
         return mouse_click
 
-def validateMouseClick(HomeValidation, CoinValidation, next_move, x=0, y=0):    
+def validateMouseClick(HomeValidation, CoinValidation, next_move):    
         if(HomeValidation and CoinValidation):
             while True:
                 mouse_click = getMouseClick()
@@ -64,7 +64,7 @@ def validateMouseClick(HomeValidation, CoinValidation, next_move, x=0, y=0):
                         mouse_click = Players[next_move].coins[getHomeCoin(next_move)] # getHomeCoin returns index. so, now getting position
                     return mouse_click
                 else:
-                    pass
+                    continue
                     # can play invalid click sound here
         elif(not HomeValidation and CoinValidation ):
             while True:
@@ -73,7 +73,7 @@ def validateMouseClick(HomeValidation, CoinValidation, next_move, x=0, y=0):
                     return mouse_click
                 else:
                     #can play invalid click sound 
-                    pass
+                    continue
 
 dice = [pygame.transform.scale(pygame.image.load(f"assets/dice/dice{i}.png"), (ICON_SIZE, ICON_SIZE)) for i in range(1,7)]
 dice_value = 1
@@ -87,7 +87,7 @@ pygame.event.set_allowed(pygame.K_ESCAPE)
 pygame.event.set_allowed(pygame.QUIT)
 
 while running:
-    sleep(1/5)
+    sleep(1/3)
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONUP:
             x,y = pygame.mouse.get_pos()
@@ -114,8 +114,7 @@ while running:
             screen.blit(dice[dice_value - 1], (p*ICON_SIZE, q*ICON_SIZE))
             pygame.display.flip()
             if(dice_value == 6):
-                # 1- scenario 1 : if all 4 coins at home - move directly to start 
-                print(f"Players[next_move].CoinsOutOfHome : {Players[next_move].CoinsOutOfHome}")
+                #scenario 1 : if all 4 coins at home - move directly to start 
                 if(Players[next_move].CoinsOutOfHome == 0):
                     print(f"Players[next_move].CoinsOutOfHome at start : {Players[next_move].CoinsOutOfHome}")
                     Players[next_move].coins[getHomeCoin(next_move)] = Players[next_move].start_pos
@@ -124,17 +123,17 @@ while running:
                     Players[next_move].CoinsOutOfHome += 1
                     print(f"Players[next_move].CoinsOutOfHome at end: {Players[next_move].CoinsOutOfHome}")
 
-                # 1- scenario 2 : coins at home & outside also - based on mouse click - validate mouse click in coins list or at home, else wait for mouse click again
+                #scenario 2 : coins at home & outside also - based on mouse click - validate mouse click in coins list or at home, else wait for mouse click again
                 elif(Players[next_move].CoinsOutOfHome and Players[next_move].CoinsOutOfHome != len(Players)):
                     print("entered scenario 2")
-                    CoinToMove = validateMouseClick(HomeValidation = True, CoinValidation = True, next_move = next_move, x = x, y = y)
+                    CoinToMove = validateMouseClick(HomeValidation = True, CoinValidation = True, next_move = next_move)
                     print(f" CoinToMove : {CoinToMove}")
-                    if(CoinToMove in Players[next_move].coins): # move to start
+                    if(not CoinToMove in Players[next_move].coins): # move to start
                         print("entered scenario 2 - if")
                         Players[next_move].coins[getHomeCoin(next_move)] = Players[next_move].start_pos
                         print(Players[next_move].coins)
-                        print("moved coin to start position")
-                        Players[next_move].CoinsOutOfHome += 1
+                        #print("moved coin to start position")
+                        #Players[next_move].CoinsOutOfHome += 1
                     else:
                         print("entered scenario 2 - else")
                         Where_To = Players[next_move].move_to( CoinToMove, dice_value)
@@ -143,7 +142,7 @@ while running:
                         Players[next_move].CoinsOutOfHome += 1
                         print(f" from else {Players[next_move].coins}")                        
 
-                # 1- scenario 3 : All coins are outside - based on mouse click - validate mouse click only for in coins list?
+                #scenario 3 : All coins are outside - based on mouse click - validate mouse click only for in coins list?
                 elif(Players[next_move].CoinsOutOfHome == len(Players)):
                     CoinToMove = validateMouseClick(HomeValidation = False, CoinValidation = True, next_move = next_move)
                     print(f" CoinToMove : {CoinToMove}")
@@ -152,9 +151,11 @@ while running:
                     Players[next_move].CoinsOutOfHome += 1
                     print(Players[next_move].coins)                    
 
-                # 1- scenario 4 - Another chance for rolling 6 
+                #scenario 4 - Another chance for rolling 6 
                 mouse_click = None
                 continue
+
+            # other than 6 is rolled
             elif(Players[next_move].CoinsOutOfHome):
                 CoinToMove = validateMouseClick(HomeValidation = False, CoinValidation = True, next_move = next_move)
                 print(f" CoinToMove : {CoinToMove}")
@@ -162,9 +163,8 @@ while running:
                 Players[next_move].coins[Players[next_move].coins.index(CoinToMove)] = Where_To
                 Players[next_move].CoinsOutOfHome += 1
                 print(Players[next_move].coins)   
-                # other than 6
             print("wait for mouse click")
-            pygame.event.wait()
+            #pygame.event.wait()
             #logic plyer.move_to()
             next_move = get_next_move()
         mouse_click = None
