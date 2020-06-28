@@ -61,11 +61,25 @@ def validateMouseClick(HomeValidation, CoinValidation, next_move):
                     #can play invalid click sound 
                     continue
 
-"""def checkKill():
-    if():
-        pass
-        if(inSafePos?):
-            #doNOthing"""
+def checkKill(Movedcoin, next_move):   # checks for possibility of kill for every move and if yes - 1 = executes kill
+    kill_value = False
+    print(Movedcoin)
+    if(Movedcoin == (-1, -1) or Movedcoin in Players[next_move].safe_pos):
+        return kill_value
+    else:
+        for colour in Players:
+            if(colour == next_move):
+                continue
+            Count = Players[colour].coins.count(Movedcoin)
+            while(Count):
+                i = Players[colour].coins.index(Movedcoin)
+                Players[colour].coins[i] = Players[colour].coins_home_pos[i]
+                Players[colour].CoinsOutOfHome -= 1
+                kill_value = True
+                Count -= 1
+            if(kill_value):
+                break
+        return kill_value
 
 dice = [pygame.transform.scale(pygame.image.load(f"assets/dice/dice{i}.png"), (ICON_SIZE, ICON_SIZE)) for i in range(1,7)]
 dice_value = 1
@@ -107,6 +121,7 @@ while running:
             print(f"clicked on {next_move} dice, dice score-{dice_value}")
             screen.blit(dice[dice_value - 1], (p*ICON_SIZE, q*ICON_SIZE))
             pygame.display.flip()
+            Where_To = (-1, -1)
 
             if(dice_value == 6):
                 #scenario 1 : if all 4 coins at home - move directly to start 
@@ -135,17 +150,24 @@ while running:
                     Where_To = Players[next_move].move_to( CoinToMove, dice_value)
                     Players[next_move].coins[Players[next_move].coins.index(CoinToMove)] = Where_To
 
-                #checkKill()
+                checkKill(Where_To, next_move)
                 # Another chance for rolling 6
-                print("Another chance, click again")
+                #CoinToMove = None
+                print("Another chance for 6, roll dice again")
                 mouse_click = None
                 continue
 
             # other than 6 is rolled
             elif(Players[next_move].CoinsOutOfHome):
+                Where_To = (-1, -1)
                 CoinToMove = validateMouseClick(HomeValidation = False, CoinValidation = True, next_move = next_move)
                 Where_To = Players[next_move].move_to( CoinToMove, dice_value)
                 Players[next_move].coins[Players[next_move].coins.index(CoinToMove)] = Where_To
+
+                if(checkKill(Where_To, next_move)):
+                    print("Another chance for kill, roll dice again")
+                    mouse_click = None
+                    continue            
 
             next_move = get_next_move()
         mouse_click = None

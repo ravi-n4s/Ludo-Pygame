@@ -16,10 +16,10 @@
 1. If coins outside - based on mouse click
 1. If no coin outside - do Nothing
 
+* killing logic - also handled to kill multiple coins of same color
+
 # TODO:
                 
-* killing logic
-
 * logic after complete round - to get inside
 
 * integrate code to display multiple coins in single cell

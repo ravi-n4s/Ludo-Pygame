@@ -12,7 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.surf.blit(img, (0, 0))
         self.rect = self.surf.get_rect()
         self.CoinsOutOfHome = 0
-        self.safe_pos = [(1, 6),(8, 1),(13, 8),(6, 13),(2, 8),(8, 12),(12, 6),(6, 2)]
+        self.safe_pos = [(1, 6), (8, 1), (13, 8), (6, 13), (2, 8), (8, 12), (12, 6), (6, 2)]
 
         self.board = [(6, 0), (7, 0), (8, 0), (8, 1), (8, 2), (8, 3), (8, 4), (8, 5), (9, 6), (10, 6),
                       (11, 6), (12, 6), (13, 6), (14, 6), (14, 7), (14, 8), (13, 8), (12, 8), (11, 8), (10, 8),
@@ -52,7 +52,7 @@ class Player(pygame.sprite.Sprite):
         #coin = self.get_pos
         index = self.board.index(coin)
         if index != -1:
-            return self.board[(index + move) % 52]
+            return (0, 7) #self.board[(index + move) % 52]
         else:
-            return -1
+            return (-1,-1)
 
