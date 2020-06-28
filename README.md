@@ -11,13 +11,12 @@
 1. All coins are outside - based on mouse click - validate mouse click only for in coins list?
 1. Another Chance for rolling 6
 
-# TODO:
-
 ### If other than 6 is rolled - 
 * Scenarios :-
-1. Only one coin out - move directly
-1. Multiple coins outside - based on mouse click
+1. If coins outside - based on mouse click
 1. If no coin outside - do Nothing
+
+# TODO:
                 
 * killing logic
 
@@ -29,7 +28,7 @@
 
 * Move Indicator after dice roll
 
-* Highlight the boxes to click
+* Highlight the boxes to click after a dice roll
 
 * Try and implement sounds for valid and invalid clicks
 
