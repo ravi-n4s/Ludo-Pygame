@@ -13,14 +13,32 @@ ICON_SIZE = SCREEN_SIZE // 15
 pygame.display.set_caption("LUDO")
 screen = pygame.display.set_mode([SCREEN_SIZE, SCREEN_SIZE])
 bg_img = pygame.transform.scale(pygame.image.load("assets/board.png"), (SCREEN_SIZE, SCREEN_SIZE))
+star_img = pygame.transform.scale(pygame.image.load("assets/star.png"), (ICON_SIZE, ICON_SIZE))
+
+dice = [pygame.transform.scale(pygame.image.load(f"assets/dice/dice{i}.png"), (ICON_SIZE, ICON_SIZE)) for i in range(1,7)]
+dice_value = 1
+running = True
+mouse_click = None
+
+pygame.event.set_blocked(None)      # If None is passed - it blocks all events
+pygame.event.set_allowed(pygame.MOUSEBUTTONUP) # after blocking all events, enabling required events - so that event queue doesn't track all
+pygame.event.set_allowed(pygame.KEYDOWN)
+pygame.event.set_allowed(pygame.K_ESCAPE)
+pygame.event.set_allowed(pygame.QUIT)
 
 Players = {
-    "green": Player("green", ICON_SIZE),
+    #"green": Player("green", ICON_SIZE),
     "red": Player("red", ICON_SIZE),
-    "blue": Player("blue", ICON_SIZE),
+    #"blue": Player("blue", ICON_SIZE),
     "yellow": Player("yellow", ICON_SIZE)
 }
-next_move = 'green'
+next_move = list(Players.keys())[0]
+
+screen.blit(bg_img, (0, 0))
+
+for i in [(2, 8), (8, 12), (12, 6), (6, 2)]:
+    screen.blit(star_img, (i[0]*ICON_SIZE, i[1]*ICON_SIZE))
+
 
 def get_next_move():
     colors = list(Players.keys())
@@ -61,6 +79,10 @@ def validateMouseClick(HomeValidation, CoinValidation, next_move):
                     #can play invalid click sound 
                     continue
 
+def MultiCoinSingleCell(coin, f_color):
+    if(coin):
+        pass
+
 def checkKill(Movedcoin, next_move):   # checks for possibility of kill for every move and if yes - 1 = executes kill
     kill_value = False
     print(Movedcoin)
@@ -81,17 +103,6 @@ def checkKill(Movedcoin, next_move):   # checks for possibility of kill for ever
                 break
         return kill_value
 
-dice = [pygame.transform.scale(pygame.image.load(f"assets/dice/dice{i}.png"), (ICON_SIZE, ICON_SIZE)) for i in range(1,7)]
-dice_value = 1
-running = True
-mouse_click = None
-
-pygame.event.set_blocked(None)      # If None is passed - it blocks all events
-pygame.event.set_allowed(pygame.MOUSEBUTTONUP) # after blocking all events, enabling required events - so that event queue doesn't track all
-pygame.event.set_allowed(pygame.KEYDOWN)
-pygame.event.set_allowed(pygame.K_ESCAPE)
-pygame.event.set_allowed(pygame.QUIT)
-
 while running:
     sleep(1/3)
     for event in pygame.event.get():
@@ -102,7 +113,7 @@ while running:
         elif event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             running = False 
 
-    screen.blit(bg_img, (0, 0))
+    #screen.blit(bg_img, (0, 0))
 
     # get position from coins list and update in every frame
     for color in Players:
@@ -122,44 +133,44 @@ while running:
             screen.blit(dice[dice_value - 1], (p*ICON_SIZE, q*ICON_SIZE))
             pygame.display.flip()
             Where_To = (-1, -1)
+            ActiveCoins = Players[next_move].CoinsOutOfHome - Players[next_move].CoinsWinned
 
             if(dice_value == 6):
                 #scenario 1 : if all 4 coins at home - move directly to start 
-                if(not Players[next_move].CoinsOutOfHome):
+                if(not ActiveCoins):
+                    print('s1')
                     Players[next_move].coins[getHomeCoin(next_move)] = Players[next_move].start_pos
                     Players[next_move].CoinsOutOfHome += 1
-                    print("s-1")
 
                 #scenario 2 : coins at home & outside also - based on mouse click - validate mouse click in coins list or at home, else wait for mouse click again
-                elif(Players[next_move].CoinsOutOfHome != len(Players)):
+                elif(ActiveCoins != 4):
                     CoinToMove = validateMouseClick(HomeValidation = True, CoinValidation = True, next_move = next_move)
                     print(f"CoinToMove : {CoinToMove}")
                     if(CoinToMove not in Players[next_move].coins_home_pos):
-                        print("if)")
+                        print ('s2 -if')
                         Where_To = Players[next_move].move_to( CoinToMove, dice_value)
                         Players[next_move].coins[Players[next_move].coins.index(CoinToMove)] = Where_To
                     else:    # move to start
-                        print("else")
+                        print ('s2 - else')
                         Players[next_move].coins[Players[next_move].coins.index(CoinToMove)] = Players[next_move].start_pos
                         Players[next_move].CoinsOutOfHome += 1
 
                 #scenario 3 : All coins are outside - based on mouse click - validate mouse click only for in coins list?
-                elif(Players[next_move].CoinsOutOfHome == len(Players)):
-                    print("all coins out of Home")
+                elif(ActiveCoins == 4):
+                    print ('s-3')
                     CoinToMove = validateMouseClick(HomeValidation = False, CoinValidation = True, next_move = next_move)
                     Where_To = Players[next_move].move_to( CoinToMove, dice_value)
                     Players[next_move].coins[Players[next_move].coins.index(CoinToMove)] = Where_To
 
                 checkKill(Where_To, next_move)
                 # Another chance for rolling 6
-                #CoinToMove = None
                 print("Another chance for 6, roll dice again")
                 mouse_click = None
                 continue
 
             # other than 6 is rolled
-            elif(Players[next_move].CoinsOutOfHome):
-                Where_To = (-1, -1)
+            elif(ActiveCoins):
+                print ('other than 6')
                 CoinToMove = validateMouseClick(HomeValidation = False, CoinValidation = True, next_move = next_move)
                 Where_To = Players[next_move].move_to( CoinToMove, dice_value)
                 Players[next_move].coins[Players[next_move].coins.index(CoinToMove)] = Where_To
